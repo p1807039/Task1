@@ -1,0 +1,60 @@
+﻿
+@{
+    ViewBag.Title = "WeatherJS";
+}
+
+<h2>World Weather Online API with the Usage of Jquery AJAX</h2>
+<h3>Location: </h3>
+<h4 id="query"></h4>
+<h3>Temperature: </h3>
+<h4 id="tempC"></h4>
+<button>Get Weather</button>
+<br />
+<br />
+<br />
+<div id="loader" style="margin-top:10px; display:none;" role="status">
+    <img src="~/Scripts/ajax-loader.gif" />
+</div>
+<h4 id="Error"></h4>
+
+
+
+<script>
+    //Calling the World Weather Online API
+
+    var key = ""; //Enter World Weather Online API Key here
+
+    //Use of Jquery Ajax 
+    $(document).ready(function () {
+        $("button").click(function () {
+            $.ajax({
+                url: "http://api.worldweatheronline.com/premium/v1/weather.ashx?key=" + key + "&q=Singapore",
+                type: "GET",
+                //Call loader to spin before sending request
+                beforeSend: function () {
+                    $("#loader").show();
+                },
+                //Exit Loader when request is complete
+                complete: function () {
+                    $("#loader").hide();
+                },
+                //Data displayed when it is successful
+                success: function (data) {
+                    var xml = data,
+                        $xml = $(xml),
+                        $query = $xml.find("query"),
+                        $tempC = $xml.find("temp_C");
+
+                    $("#query").append($query.text());
+                    $("#tempC").append($tempC.text());
+
+                    //Capture data 
+                    console.log(data);
+                },
+                error: function () {
+                    $('#Error').html("Failed to fetch api data, click on weather button to retry....");
+                }
+            });
+        });
+    });
+</script>
